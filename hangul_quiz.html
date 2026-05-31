@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ワンちゃんと学ぶ ハングル読み方クイズ 🐶</title>
+<style>
+  :root{
+    --pink-bg:#ffe3ef;
+    --pink-1:#ffb6d5;
+    --pink-2:#ff8fbf;
+    --pink-deep:#ff5fa2;
+    --pink-soft:#fff0f6;
+    --text:#5a3a4a;
+    --correct:#7fd99a;
+    --wrong:#ff8a8a;
+    --shadow:rgba(255,95,162,.25);
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:"Hiragino Maru Gothic ProN","Rounded Mplus 1c","Segoe UI",sans-serif;
+    background:linear-gradient(160deg,#ffe9f3 0%,#ffd6e8 60%,#ffc2dd 100%);
+    color:var(--text);
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+  }
+  /* floating decorative paws */
+  .deco{position:fixed;font-size:28px;opacity:.35;pointer-events:none;animation:floaty 6s ease-in-out infinite;}
+  @keyframes floaty{0%,100%{transform:translateY(0) rotate(-8deg);}50%{transform:translateY(-18px) rotate(8deg);}}
+
+  .card{
+    width:100%;
+    max-width:440px;
+    background:var(--pink-soft);
+    border-radius:32px;
+    padding:28px 26px 34px;
+    box-shadow:0 18px 50px var(--shadow);
+    position:relative;
+    border:4px solid #fff;
+  }
+
+  h1{
+    text-align:center;
+    font-size:21px;
+    margin:6px 0 4px;
+    color:var(--pink-deep);
+    letter-spacing:.5px;
+  }
+  .subtitle{text-align:center;font-size:13px;color:#b87a96;margin-bottom:14px;}
+
+  /* progress + score */
+  .topbar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    font-size:13px;
+    font-weight:bold;
+    color:var(--pink-deep);
+    margin-bottom:10px;
+  }
+  .progress-track{
+    height:12px;
+    background:#ffd9e8;
+    border-radius:999px;
+    overflow:hidden;
+    margin-bottom:18px;
+  }
+  .progress-fill{
+    height:100%;
+    width:0%;
+    background:linear-gradient(90deg,var(--pink-2),var(--pink-deep));
+    border-radius:999px;
+    transition:width .4s ease;
+  }
+
+  /* dog */
+  .dog{
+    text-align:center;
+    margin-bottom:8px;
+  }
+  .dog svg{width:120px;height:120px;transition:transform .3s;}
+  .dog.happy svg{animation:bounce .6s;}
+  .dog.sad svg{animation:shake .5s;}
+  @keyframes bounce{0%,100%{transform:translateY(0);}30%{transform:translateY(-22px) scale(1.05);}60%{transform:translateY(0);}}
+  @keyframes shake{0%,100%{transform:translateX(0);}20%{transform:translateX(-10px) rotate(-4deg);}40%{transform:translateX(10px) rotate(4deg);}60%{transform:translateX(-8px);}80%{transform:translateX(8px);}}
+
+  .speech{
+    background:#fff;
+    border:3px solid var(--pink-1);
+    border-radius:18px;
+    padding:8px 14px;
+    font-size:14px;
+    font-weight:bold;
+    text-align:center;
+    margin:0 auto 14px;
+    max-width:300px;
+    position:relative;
+    min-height:20px;
+    color:var(--pink-deep);
+  }
+  .speech::after{
+    content:"";position:absolute;top:-12px;left:50%;transform:translateX(-50%);
+    border:6px solid transparent;border-bottom-color:var(--pink-1);
+  }
+
+  /* question */
+  .question-box{
+    text-align:center;
+    margin-bottom:6px;
+  }
+  .hangul{
+    font-size:78px;
+    font-weight:bold;
+    color:var(--pink-deep);
+    line-height:1;
+    text-shadow:2px 3px 0 #ffd0e3;
+  }
+  .qlabel{font-size:13px;color:#b87a96;margin-top:6px;}
+
+  /* options */
+  .options{display:grid;gap:12px;margin-top:18px;}
+  .opt{
+    background:#fff;
+    border:3px solid var(--pink-1);
+    border-radius:18px;
+    padding:14px;
+    font-size:18px;
+    font-weight:bold;
+    color:var(--text);
+    cursor:pointer;
+    transition:all .15s;
+    box-shadow:0 4px 0 #ffc6dd;
+  }
+  .opt:hover:not(:disabled){transform:translateY(-2px);background:var(--pink-soft);}
+  .opt:active:not(:disabled){transform:translateY(2px);box-shadow:0 1px 0 #ffc6dd;}
+  .opt:disabled{cursor:default;}
+  .opt.correct{background:var(--correct);border-color:#5cc47c;color:#fff;box-shadow:0 4px 0 #4ca568;}
+  .opt.wrong{background:var(--wrong);border-color:#ff6b6b;color:#fff;box-shadow:0 4px 0 #e25c5c;}
+
+  .next-btn{
+    width:100%;
+    margin-top:18px;
+    padding:14px;
+    font-size:16px;
+    font-weight:bold;
+    color:#fff;
+    background:linear-gradient(90deg,var(--pink-2),var(--pink-deep));
+    border:none;
+    border-radius:18px;
+    cursor:pointer;
+    box-shadow:0 5px 0 #d94d8a;
+    transition:all .15s;
+  }
+  .next-btn:hover{transform:translateY(-2px);}
+  .next-btn:active{transform:translateY(3px);box-shadow:0 2px 0 #d94d8a;}
+  .hidden{display:none;}
+
+  /* result screen */
+  .result{text-align:center;}
+  .result .bigscore{font-size:46px;font-weight:bold;color:var(--pink-deep);margin:10px 0;}
+  .result .stars{font-size:32px;margin-bottom:10px;}
+  .result p{font-size:15px;color:#a86d88;}
+</style>
+</head>
+<body>
+  <span class="deco" style="top:8%;left:6%;">🐾</span>
+  <span class="deco" style="top:20%;right:8%;animation-delay:1.5s;">💗</span>
+  <span class="deco" style="bottom:12%;left:10%;animation-delay:.8s;">🐾</span>
+  <span class="deco" style="bottom:20%;right:7%;animation-delay:2.2s;">🦴</span>
+
+  <div class="card">
+    <h1>ワンちゃんと学ぶ ハングル 🐶</h1>
+    <div class="subtitle">読み方クイズ で たのしくお勉強！</div>
+
+    <!-- QUIZ AREA -->
+    <div id="quizArea">
+      <div class="topbar">
+        <span id="qcount">問題 1 / 10</span>
+        <span id="scoreText">⭐ 0</span>
+      </div>
+      <div class="progress-track"><div class="progress-fill" id="progress"></div></div>
+
+      <div class="dog" id="dog">
+        <!-- cute pink Pomeranian SVG -->
+        <svg viewBox="0 0 120 120" id="dogSvg">
+          <!-- pointed ears (triangular, behind the fluff) -->
+          <path d="M28 46 L20 16 L48 36 Z" fill="#ff8fbf"/>
+          <path d="M92 46 L100 16 L72 36 Z" fill="#ff8fbf"/>
+          <path d="M30 42 L25 24 L43 35 Z" fill="#ffd0e3"/>
+          <path d="M90 42 L95 24 L77 35 Z" fill="#ffd0e3"/>
+          <!-- fluffy ruff/mane: bumpy cloud outline -->
+          <path d="M60 22
+            C74 22 84 30 87 41
+            C98 41 105 50 102 61
+            C110 67 109 80 99 84
+            C100 95 90 103 80 100
+            C75 109 64 110 60 104
+            C56 110 45 109 40 100
+            C30 103 20 95 21 84
+            C11 80 10 67 18 61
+            C15 50 22 41 33 41
+            C36 30 46 22 60 22 Z"
+            fill="#ffd9ea"/>
+          <!-- inner fluff layer -->
+          <path d="M60 30
+            C72 30 80 37 82 47
+            C92 49 96 60 90 68
+            C94 78 85 88 75 87
+            C70 95 50 95 45 87
+            C35 88 26 78 30 68
+            C24 60 28 49 38 47
+            C40 37 48 30 60 30 Z"
+            fill="#ffc2dd"/>
+          <!-- face -->
+          <circle cx="60" cy="64" r="30" fill="#ffe3ef"/>
+          <!-- cheeks -->
+          <circle cx="40" cy="70" r="7" fill="#ff8fbf" opacity=".55"/>
+          <circle cx="80" cy="70" r="7" fill="#ff8fbf" opacity=".55"/>
+          <!-- eyes -->
+          <g id="eyes">
+            <circle cx="49" cy="58" r="5.5" fill="#5a3a4a"/>
+            <circle cx="71" cy="58" r="5.5" fill="#5a3a4a"/>
+            <circle cx="51" cy="56" r="2" fill="#fff"/>
+            <circle cx="73" cy="56" r="2" fill="#fff"/>
+          </g>
+          <!-- small fox-like snout -->
+          <ellipse cx="60" cy="74" rx="10" ry="8" fill="#fff0f6"/>
+          <ellipse cx="60" cy="70" rx="4" ry="3" fill="#5a3a4a"/>
+          <path d="M60 73 v4 M60 77 q-5 4 -8 0 M60 77 q5 4 8 0" stroke="#5a3a4a" stroke-width="2" fill="none" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="speech" id="speech">いっしょに がんばろう！🐾</div>
+
+      <div class="question-box">
+        <div class="hangul" id="hangul">한</div>
+        <div class="qlabel">この ハングルの 読み方は？</div>
+      </div>
+
+      <div class="options" id="options"></div>
+
+      <button class="next-btn hidden" id="nextBtn">つぎの問題へ ➡️</button>
+    </div>
+
+    <!-- RESULT AREA -->
+    <div id="resultArea" class="result hidden">
+      <div class="dog happy">
+        <svg viewBox="0 0 120 120" width="130" height="130">
+          <!-- pointed ears -->
+          <path d="M28 46 L20 16 L48 36 Z" fill="#ff8fbf"/>
+          <path d="M92 46 L100 16 L72 36 Z" fill="#ff8fbf"/>
+          <path d="M30 42 L25 24 L43 35 Z" fill="#ffd0e3"/>
+          <path d="M90 42 L95 24 L77 35 Z" fill="#ffd0e3"/>
+          <!-- fluffy ruff -->
+          <path d="M60 22
+            C74 22 84 30 87 41
+            C98 41 105 50 102 61
+            C110 67 109 80 99 84
+            C100 95 90 103 80 100
+            C75 109 64 110 60 104
+            C56 110 45 109 40 100
+            C30 103 20 95 21 84
+            C11 80 10 67 18 61
+            C15 50 22 41 33 41
+            C36 30 46 22 60 22 Z"
+            fill="#ffd9ea"/>
+          <path d="M60 30
+            C72 30 80 37 82 47
+            C92 49 96 60 90 68
+            C94 78 85 88 75 87
+            C70 95 50 95 45 87
+            C35 88 26 78 30 68
+            C24 60 28 49 38 47
+            C40 37 48 30 60 30 Z"
+            fill="#ffc2dd"/>
+          <circle cx="60" cy="64" r="30" fill="#ffe3ef"/>
+          <circle cx="40" cy="70" r="7" fill="#ff8fbf" opacity=".55"/>
+          <circle cx="80" cy="70" r="7" fill="#ff8fbf" opacity=".55"/>
+          <!-- happy closed eyes -->
+          <path d="M43 57 q6 -7 12 0" stroke="#5a3a4a" stroke-width="3" fill="none" stroke-linecap="round"/>
+          <path d="M65 57 q6 -7 12 0" stroke="#5a3a4a" stroke-width="3" fill="none" stroke-linecap="round"/>
+          <ellipse cx="60" cy="74" rx="10" ry="8" fill="#fff0f6"/>
+          <ellipse cx="60" cy="70" rx="4" ry="3" fill="#5a3a4a"/>
+          <!-- happy open mouth + tongue -->
+          <path d="M52 78 q8 8 16 0" stroke="#ff5fa2" stroke-width="3" fill="#ff8a9e" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <h1>おわり！おつかれさま 🎉</h1>
+      <div class="stars" id="resultStars"></div>
+      <div class="bigscore" id="finalScore">0 / 10</div>
+      <p id="resultMsg"></p>
+      <button class="next-btn" id="retryBtn">もう一度 あそぶ 🔁</button>
+    </div>
+  </div>
+
+<script>
+/* ハングル読み方データ（基本の文字） */
+const ALL = [
+  {h:"가", r:"ガ (ga)"},   {h:"나", r:"ナ (na)"},   {h:"다", r:"ダ (da)"},
+  {h:"라", r:"ラ (ra)"},   {h:"마", r:"マ (ma)"},   {h:"바", r:"バ (ba)"},
+  {h:"사", r:"サ (sa)"},   {h:"아", r:"ア (a)"},    {h:"자", r:"ジャ (ja)"},
+  {h:"하", r:"ハ (ha)"},   {h:"고", r:"ゴ (go)"},   {h:"노", r:"ノ (no)"},
+  {h:"도", r:"ド (do)"},   {h:"로", r:"ロ (ro)"},   {h:"모", r:"モ (mo)"},
+  {h:"보", r:"ボ (bo)"},   {h:"소", r:"ソ (so)"},   {h:"오", r:"オ (o)"},
+  {h:"구", r:"グ (gu)"},   {h:"누", r:"ヌ (nu)"},   {h:"두", r:"ドゥ (du)"},
+  {h:"무", r:"ム (mu)"},   {h:"부", r:"ブ (bu)"},   {h:"수", r:"ス (su)"},
+  {h:"우", r:"ウ (u)"},    {h:"기", r:"ギ (gi)"},   {h:"니", r:"ニ (ni)"},
+  {h:"미", r:"ミ (mi)"},   {h:"비", r:"ビ (bi)"},   {h:"시", r:"シ (si)"},
+  {h:"이", r:"イ (i)"},    {h:"카", r:"カ (ka)"},   {h:"타", r:"タ (ta)"},
+  {h:"파", r:"パ (pa)"},   {h:"하", r:"ハ (ha)"},   {h:"러", r:"ロ (reo)"}
+];
+
+const PRAISE = ["せいかい！🎉","えらい！💗","ワンダフル！🐾","かしこい！⭐","その調子！😊"];
+const NOPE   = ["おしい！💦","ドンマイ！🐶","つぎは いける！","だいじょうぶ！💕"];
+
+const TOTAL = 10;
+let questions = [];
+let idx = 0, score = 0;
+
+const qcount=document.getElementById('qcount');
+const scoreText=document.getElementById('scoreText');
+const progress=document.getElementById('progress');
+const hangulEl=document.getElementById('hangul');
+const optionsEl=document.getElementById('options');
+const nextBtn=document.getElementById('nextBtn');
+const speech=document.getElementById('speech');
+const dog=document.getElementById('dog');
+const quizArea=document.getElementById('quizArea');
+const resultArea=document.getElementById('resultArea');
+
+function shuffle(a){return a.map(v=>[Math.random(),v]).sort((x,y)=>x[0]-y[0]).map(v=>v[1]);}
+
+function buildQuestions(){
+  const pool = shuffle(ALL).slice(0, TOTAL);
+  questions = pool.map(q=>{
+    // 3 wrong options
+    const wrongs = shuffle(ALL.filter(x=>x.r!==q.r)).slice(0,3).map(x=>x.r);
+    const opts = shuffle([q.r, ...wrongs]);
+    return {h:q.h, answer:q.r, opts};
+  });
+}
+
+function render(){
+  const q = questions[idx];
+  qcount.textContent = `問題 ${idx+1} / ${TOTAL}`;
+  scoreText.textContent = `⭐ ${score}`;
+  progress.style.width = `${(idx/TOTAL)*100}%`;
+  hangulEl.textContent = q.h;
+  speech.textContent = "この字、なんて読むのかな？🐾";
+  dog.className = "dog";
+  optionsEl.innerHTML = "";
+  q.opts.forEach(opt=>{
+    const b=document.createElement('button');
+    b.className='opt';
+    b.textContent=opt;
+    b.onclick=()=>choose(b,opt,q.answer);
+    optionsEl.appendChild(b);
+  });
+  nextBtn.classList.add('hidden');
+}
+
+function choose(btn, picked, answer){
+  [...optionsEl.children].forEach(b=>{
+    b.disabled=true;
+    if(b.textContent===answer) b.classList.add('correct');
+  });
+  if(picked===answer){
+    score++;
+    scoreText.textContent = `⭐ ${score}`;
+    speech.textContent = PRAISE[Math.floor(Math.random()*PRAISE.length)];
+    dog.className="dog happy";
+  }else{
+    btn.classList.add('wrong');
+    speech.textContent = NOPE[Math.floor(Math.random()*NOPE.length)];
+    dog.className="dog sad";
+  }
+  nextBtn.textContent = (idx===TOTAL-1) ? "けっか を みる 🏆" : "つぎの問題へ ➡️";
+  nextBtn.classList.remove('hidden');
+}
+
+nextBtn.onclick=()=>{
+  idx++;
+  if(idx>=TOTAL){ showResult(); }
+  else { render(); }
+};
+
+function showResult(){
+  quizArea.classList.add('hidden');
+  resultArea.classList.remove('hidden');
+  document.getElementById('finalScore').textContent = `${score} / ${TOTAL}`;
+  const ratio = score/TOTAL;
+  let stars = ratio>=0.9?"⭐⭐⭐":ratio>=0.6?"⭐⭐":ratio>=0.3?"⭐":"💫";
+  document.getElementById('resultStars').textContent = stars;
+  let msg = ratio>=0.9?"カンペキ！ハングルマスター犬だね！🐶👑"
+          : ratio>=0.6?"いいかんじ！もう少しでマスター！💗"
+          : ratio>=0.3?"その調子！くり返しておぼえよう！🐾"
+          : "だいじょうぶ！いっしょに練習しよう！💕";
+  document.getElementById('resultMsg').textContent = msg;
+}
+
+document.getElementById('retryBtn').onclick=()=>{
+  idx=0; score=0;
+  buildQuestions();
+  resultArea.classList.add('hidden');
+  quizArea.classList.remove('hidden');
+  render();
+};
+
+/* start */
+buildQuestions();
+render();
+</script>
+</body>
+</html>
