@@ -164,6 +164,46 @@
   .result .bigscore{font-size:46px;font-weight:bold;color:var(--pink-deep);margin:10px 0;}
   .result .stars{font-size:32px;margin-bottom:10px;}
   .result p{font-size:15px;color:#a86d88;}
+
+  /* menu screen */
+  .menu{text-align:center;}
+  .menu .lead{font-size:14px;color:#a86d88;margin:4px 0 18px;}
+  .mode-list{display:grid;gap:14px;margin-top:8px;}
+  .mode-btn{
+    background:#fff;
+    border:3px solid var(--pink-1);
+    border-radius:20px;
+    padding:16px 14px;
+    cursor:pointer;
+    transition:all .15s;
+    box-shadow:0 5px 0 #ffc6dd;
+    text-align:left;
+    display:flex;
+    align-items:center;
+    gap:14px;
+  }
+  .mode-btn:hover{transform:translateY(-2px);background:var(--pink-soft);}
+  .mode-btn:active{transform:translateY(3px);box-shadow:0 2px 0 #ffc6dd;}
+  .mode-btn .emoji{font-size:32px;line-height:1;}
+  .mode-btn .mtitle{font-size:18px;font-weight:bold;color:var(--pink-deep);}
+  .mode-btn .mdesc{font-size:12px;color:#b87a96;margin-top:2px;}
+
+  .home-btn{
+    width:100%;
+    margin-top:10px;
+    padding:12px;
+    font-size:14px;
+    font-weight:bold;
+    color:var(--pink-deep);
+    background:#fff;
+    border:3px solid var(--pink-1);
+    border-radius:18px;
+    cursor:pointer;
+    box-shadow:0 4px 0 #ffc6dd;
+    transition:all .15s;
+  }
+  .home-btn:hover{transform:translateY(-2px);background:var(--pink-soft);}
+  .home-btn:active{transform:translateY(2px);box-shadow:0 1px 0 #ffc6dd;}
 </style>
 </head>
 <body>
@@ -176,8 +216,53 @@
     <h1>ワンちゃんと学ぶ ハングル 🐶</h1>
     <div class="subtitle">読み方クイズ で たのしくお勉強！</div>
 
+    <!-- MENU AREA -->
+    <div id="menuArea" class="menu">
+      <div class="dog happy">
+        <svg viewBox="0 0 145 145" width="120" height="120">
+          <g stroke="#191a1e" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round">
+            <path d="M45 7 L32 40 L61 33 Z" fill="#34373f"/>
+            <path d="M95 7 L108 40 L79 33 Z" fill="#34373f"/>
+            <path d="M70 25 L77.5 33.6 L87.8 27.8 L91.5 38.2 L103.4 36 L102.9 46.9 L115 48.5 L110.4 58.7 L121.2 63.8 L113 72 L121.2 80.2 L110.4 85.3 L115 95.5 L102.9 97.1 L103.4 108 L91.5 105.8 L87.8 116.2 L77.5 110.4 L70 119 L62.5 110.4 L52.2 116.2 L48.5 105.8 L36.6 108 L37.1 97.1 L25 95.5 L29.6 85.3 L18.8 80.2 L27 72 L18.8 63.8 L29.6 58.7 L25 48.5 L37.1 46.9 L36.6 36 L48.5 38.2 L52.2 27.8 L62.5 33.6 Z" fill="#3c4049"/>
+          </g>
+          <path d="M46 15 L40 36 L56 31 Z" fill="#565a63"/>
+          <path d="M94 15 L100 36 L84 31 Z" fill="#565a63"/>
+          <ellipse cx="70" cy="80" rx="21" ry="15" fill="#464a54"/>
+          <path d="M50 64 q6 -7 12 0" stroke="#141519" stroke-width="3" fill="none" stroke-linecap="round"/>
+          <path d="M78 64 q6 -7 12 0" stroke="#141519" stroke-width="3" fill="none" stroke-linecap="round"/>
+          <ellipse cx="70" cy="75" rx="7" ry="5.5" fill="#141519"/>
+          <path d="M70 80 v3" stroke="#141519" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+          <path d="M58 84 q12 12 24 0 q-12 6 -24 0 Z" fill="#ff8a9e" stroke="#141519" stroke-width="2"/>
+        </svg>
+      </div>
+      <div class="lead">どの クイズで あそぶ？ えらんでね 🐾</div>
+      <div class="mode-list">
+        <button class="mode-btn" data-mode="single">
+          <span class="emoji">🍡</span>
+          <span>
+            <div class="mtitle">1文字</div>
+            <div class="mdesc">가・나・다… 基本の文字の読み方</div>
+          </span>
+        </button>
+        <button class="mode-btn" data-mode="patchim">
+          <span class="emoji">🧱</span>
+          <span>
+            <div class="mtitle">ぱっちむ（받침）</div>
+            <div class="mdesc">강・밥・물… 下にある文字（終わりの音）</div>
+          </span>
+        </button>
+        <button class="mode-btn" data-mode="word">
+          <span class="emoji">📚</span>
+          <span>
+            <div class="mtitle">複数文字（たんご）</div>
+            <div class="mdesc">사랑・한국… 単語まるごと読んでみよう</div>
+          </span>
+        </button>
+      </div>
+    </div>
+
     <!-- QUIZ AREA -->
-    <div id="quizArea">
+    <div id="quizArea" class="hidden">
       <div class="topbar">
         <span id="qcount">問題 1 / 10</span>
         <span id="scoreText">⭐ 0</span>
@@ -224,12 +309,13 @@
 
       <div class="question-box">
         <div class="hangul" id="hangul">한</div>
-        <div class="qlabel">この ハングルの 読み方は？</div>
+        <div class="qlabel" id="qlabel">この ハングルの 読み方は？</div>
       </div>
 
       <div class="options" id="options"></div>
 
       <button class="next-btn hidden" id="nextBtn">つぎの問題へ ➡️</button>
+      <button class="home-btn" id="homeBtn">🏠 メニューへ もどる</button>
     </div>
 
     <!-- RESULT AREA -->
@@ -266,13 +352,16 @@
       <div class="stars" id="resultStars"></div>
       <div class="bigscore" id="finalScore">0 / 10</div>
       <p id="resultMsg"></p>
-      <button class="next-btn" id="retryBtn">もう一度 あそぶ 🔁</button>
+      <button class="next-btn" id="retryBtn">同じクイズで もう一度 🔁</button>
+      <button class="home-btn" id="resultHomeBtn">🏠 メニューへ もどる</button>
     </div>
   </div>
 
 <script>
-/* ハングル読み方データ（基本の文字） */
-const ALL = [
+/* ===== クイズデータ ===== */
+
+/* 1文字（基本の文字） */
+const SINGLE = [
   {h:"가", r:"ガ (ga)"},   {h:"나", r:"ナ (na)"},   {h:"다", r:"ダ (da)"},
   {h:"라", r:"ラ (ra)"},   {h:"마", r:"マ (ma)"},   {h:"바", r:"バ (ba)"},
   {h:"사", r:"サ (sa)"},   {h:"아", r:"ア (a)"},    {h:"자", r:"ジャ (ja)"},
@@ -284,8 +373,41 @@ const ALL = [
   {h:"우", r:"ウ (u)"},    {h:"기", r:"ギ (gi)"},   {h:"니", r:"ニ (ni)"},
   {h:"미", r:"ミ (mi)"},   {h:"비", r:"ビ (bi)"},   {h:"시", r:"シ (si)"},
   {h:"이", r:"イ (i)"},    {h:"카", r:"カ (ka)"},   {h:"타", r:"タ (ta)"},
-  {h:"파", r:"パ (pa)"},   {h:"하", r:"ハ (ha)"},   {h:"러", r:"ロ (reo)"}
+  {h:"파", r:"パ (pa)"},   {h:"러", r:"ロ (reo)"}
 ];
+
+/* ぱっちむ（받침＝終わりの子音つき1文字） */
+const PATCHIM = [
+  {h:"강", r:"カン (gang)"},  {h:"산", r:"サン (san)"},   {h:"밤", r:"パム (bam)"},
+  {h:"물", r:"ムル (mul)"},   {h:"밥", r:"パプ (bap)"},   {h:"책", r:"チェク (chaek)"},
+  {h:"곰", r:"コム (gom)"},   {h:"문", r:"ムン (mun)"},   {h:"길", r:"キル (gil)"},
+  {h:"발", r:"パル (bal)"},   {h:"김", r:"キム (gim)"},   {h:"집", r:"チプ (jip)"},
+  {h:"손", r:"ソン (son)"},   {h:"눈", r:"ヌン (nun)"},   {h:"봄", r:"ポム (bom)"},
+  {h:"공", r:"コン (gong)"},  {h:"한", r:"ハン (han)"},   {h:"별", r:"ピョル (byeol)"},
+  {h:"옷", r:"オッ (ot)"},    {h:"꽃", r:"コッ (kkot)"},  {h:"방", r:"パン (bang)"},
+  {h:"섬", r:"ソム (seom)"},  {h:"닭", r:"タク (dak)"},   {h:"빵", r:"パン (ppang)"}
+];
+
+/* 複数文字（たんご） */
+const WORD = [
+  {h:"사랑", r:"サラン (sarang・愛)"},      {h:"한국", r:"ハングク (hanguk・韓国)"},
+  {h:"사람", r:"サラム (saram・人)"},       {h:"학교", r:"ハッキョ (hakgyo・学校)"},
+  {h:"친구", r:"チング (chingu・友達)"},    {h:"가방", r:"カバン (gabang・カバン)"},
+  {h:"김치", r:"キムチ (gimchi)"},          {h:"안녕", r:"アンニョン (annyeong)"},
+  {h:"감사", r:"カムサ (gamsa・感謝)"},     {h:"한글", r:"ハングル (hangeul)"},
+  {h:"나라", r:"ナラ (nara・国)"},          {h:"우유", r:"ウユ (uyu・牛乳)"},
+  {h:"머리", r:"モリ (meori・頭)"},         {h:"노래", r:"ノレ (norae・歌)"},
+  {h:"바다", r:"パダ (bada・海)"},          {h:"커피", r:"コピ (keopi・コーヒー)"},
+  {h:"가족", r:"カジョク (gajok・家族)"},   {h:"시간", r:"シガン (sigan・時間)"},
+  {h:"학생", r:"ハクセン (haksaeng・学生)"},{h:"선물", r:"ソンムル (seonmul・贈り物)"},
+  {h:"비빔밥", r:"ピビンバ (bibimbap)"},    {h:"선생님", r:"ソンセンニム (先生)"}
+];
+
+const MODES = {
+  single:  {data:SINGLE,  label:"この ハングルの 読み方は？", quizTitle:"1文字クイズ"},
+  patchim: {data:PATCHIM, label:"ぱっちむ（받침）の 読み方は？", quizTitle:"ぱっちむクイズ"},
+  word:    {data:WORD,    label:"この たんご の 読み方は？",   quizTitle:"たんごクイズ"}
+};
 
 const PRAISE = ["せいかい！🎉","えらい！💗","ワンダフル！🐾","かしこい！⭐","その調子！😊"];
 const NOPE   = ["おしい！💦","ドンマイ！🐶","つぎは いける！","だいじょうぶ！💕"];
@@ -293,25 +415,29 @@ const NOPE   = ["おしい！💦","ドンマイ！🐶","つぎは いける！
 const TOTAL = 10;
 let questions = [];
 let idx = 0, score = 0;
+let currentMode = "single";
 
 const qcount=document.getElementById('qcount');
 const scoreText=document.getElementById('scoreText');
 const progress=document.getElementById('progress');
 const hangulEl=document.getElementById('hangul');
+const qlabel=document.getElementById('qlabel');
 const optionsEl=document.getElementById('options');
 const nextBtn=document.getElementById('nextBtn');
 const speech=document.getElementById('speech');
 const dog=document.getElementById('dog');
+const menuArea=document.getElementById('menuArea');
 const quizArea=document.getElementById('quizArea');
 const resultArea=document.getElementById('resultArea');
 
 function shuffle(a){return a.map(v=>[Math.random(),v]).sort((x,y)=>x[0]-y[0]).map(v=>v[1]);}
 
 function buildQuestions(){
-  const pool = shuffle(ALL).slice(0, TOTAL);
-  questions = pool.map(q=>{
-    // 3 wrong options
-    const wrongs = shuffle(ALL.filter(x=>x.r!==q.r)).slice(0,3).map(x=>x.r);
+  const pool = MODES[currentMode].data;
+  // 出題数は最大 TOTAL（データが少なければその分だけ）
+  const picked = shuffle(pool).slice(0, Math.min(TOTAL, pool.length));
+  questions = picked.map(q=>{
+    const wrongs = shuffle(pool.filter(x=>x.r!==q.r)).slice(0,3).map(x=>x.r);
     const opts = shuffle([q.r, ...wrongs]);
     return {h:q.h, answer:q.r, opts};
   });
@@ -319,10 +445,14 @@ function buildQuestions(){
 
 function render(){
   const q = questions[idx];
-  qcount.textContent = `問題 ${idx+1} / ${TOTAL}`;
+  const total = questions.length;
+  qcount.textContent = `問題 ${idx+1} / ${total}`;
   scoreText.textContent = `⭐ ${score}`;
-  progress.style.width = `${(idx/TOTAL)*100}%`;
+  progress.style.width = `${(idx/total)*100}%`;
   hangulEl.textContent = q.h;
+  // 文字数に応じてサイズ調整（単語が長くてもはみ出さない）
+  hangulEl.style.fontSize = q.h.length<=1 ? "78px" : q.h.length===2 ? "62px" : "48px";
+  qlabel.textContent = MODES[currentMode].label;
   speech.textContent = "この字、なんて読むのかな？🐾";
   dog.className = "dog";
   optionsEl.innerHTML = "";
@@ -351,21 +481,22 @@ function choose(btn, picked, answer){
     speech.textContent = NOPE[Math.floor(Math.random()*NOPE.length)];
     dog.className="dog sad";
   }
-  nextBtn.textContent = (idx===TOTAL-1) ? "けっか を みる 🏆" : "つぎの問題へ ➡️";
+  nextBtn.textContent = (idx===questions.length-1) ? "けっか を みる 🏆" : "つぎの問題へ ➡️";
   nextBtn.classList.remove('hidden');
 }
 
 nextBtn.onclick=()=>{
   idx++;
-  if(idx>=TOTAL){ showResult(); }
+  if(idx>=questions.length){ showResult(); }
   else { render(); }
 };
 
 function showResult(){
+  const total = questions.length;
   quizArea.classList.add('hidden');
   resultArea.classList.remove('hidden');
-  document.getElementById('finalScore').textContent = `${score} / ${TOTAL}`;
-  const ratio = score/TOTAL;
+  document.getElementById('finalScore').textContent = `${score} / ${total}`;
+  const ratio = score/total;
   let stars = ratio>=0.9?"⭐⭐⭐":ratio>=0.6?"⭐⭐":ratio>=0.3?"⭐":"💫";
   document.getElementById('resultStars').textContent = stars;
   let msg = ratio>=0.9?"カンペキ！ハングルマスター犬だね！🐶👑"
@@ -375,17 +506,32 @@ function showResult(){
   document.getElementById('resultMsg').textContent = msg;
 }
 
-document.getElementById('retryBtn').onclick=()=>{
+/* ===== 画面遷移 ===== */
+function startQuiz(mode){
+  currentMode = mode;
   idx=0; score=0;
   buildQuestions();
+  menuArea.classList.add('hidden');
   resultArea.classList.add('hidden');
   quizArea.classList.remove('hidden');
   render();
-};
+}
 
-/* start */
-buildQuestions();
-render();
+function goMenu(){
+  quizArea.classList.add('hidden');
+  resultArea.classList.add('hidden');
+  menuArea.classList.remove('hidden');
+}
+
+document.querySelectorAll('.mode-btn').forEach(btn=>{
+  btn.onclick=()=>startQuiz(btn.dataset.mode);
+});
+document.getElementById('homeBtn').onclick=goMenu;
+document.getElementById('resultHomeBtn').onclick=goMenu;
+document.getElementById('retryBtn').onclick=()=>startQuiz(currentMode);
+
+/* start: メニューから */
+goMenu();
 </script>
 </body>
 </html>
