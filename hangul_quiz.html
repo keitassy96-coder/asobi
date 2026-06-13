@@ -258,6 +258,13 @@
             <div class="mdesc">사랑・한국… 単語まるごと読んでみよう</div>
           </span>
         </button>
+        <button class="mode-btn" data-mode="yeoneum">
+          <span class="emoji">🔗</span>
+          <span>
+            <div class="mtitle">連音（연음）</div>
+            <div class="mdesc">음악→[으막]… パッチムが つながる 発音</div>
+          </span>
+        </button>
       </div>
     </div>
 
@@ -403,10 +410,29 @@ const WORD = [
   {h:"비빔밥", r:"ピビンバ (bibimbap)"},    {h:"선생님", r:"ソンセンニム (先生)"}
 ];
 
+/* 連音（연음）＝パッチムが次の ㅇ に移る発音。書き方と読み方がちがう！ */
+const YEONEUM = [
+  {h:"음악",   r:"ウマク [으막] (eumak・音楽)"},
+  {h:"한국어", r:"ハングゴ [한구거] (hangugeo・韓国語)"},
+  {h:"직업",   r:"チゴプ [지겁] (jigeop・職業)"},
+  {h:"발음",   r:"パルム [바름] (bareum・発音)"},
+  {h:"단어",   r:"タノ [다너] (daneo・単語)"},
+  {h:"꽃이",   r:"コチ [꼬치] (kkochi・花が)"},
+  {h:"옷을",   r:"オスル [오슬] (oseul・服を)"},
+  {h:"집에",   r:"チベ [지베] (jibe・家に)"},
+  {h:"산이",   r:"サニ [사니] (sani・山が)"},
+  {h:"밥을",   r:"パブル [바블] (babeul・ご飯を)"},
+  {h:"길이",   r:"キリ [기리] (giri・道が)"},
+  {h:"먹어요", r:"モゴヨ [머거요] (meogeoyo・食べます)"},
+  {h:"한국인", r:"ハングギン [한구긴] (hangugin・韓国人)"},
+  {h:"월요일", r:"ウォリョイル [워료일] (woryoil・月曜日)"}
+];
+
 const MODES = {
   single:  {data:SINGLE,  label:"この ハングルの 読み方は？", quizTitle:"1文字クイズ"},
   patchim: {data:PATCHIM, label:"ぱっちむ（받침）の 読み方は？", quizTitle:"ぱっちむクイズ"},
-  word:    {data:WORD,    label:"この たんご の 読み方は？",   quizTitle:"たんごクイズ"}
+  word:    {data:WORD,    label:"この たんご の 読み方は？",   quizTitle:"たんごクイズ"},
+  yeoneum: {data:YEONEUM, label:"実際の 発音（連音）は？",     quizTitle:"連音クイズ"}
 };
 
 const PRAISE = ["せいかい！🎉","えらい！💗","ワンダフル！🐾","かしこい！⭐","その調子！😊"];
